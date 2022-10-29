@@ -76,19 +76,19 @@ def findRoots(num):
     while rem:
         rem+=(2*roots[0])-1
         roots[0]-=1
-        newNum=rem+(roots[1]+roots[1])+(roots[2]*roots[2])+(roots[3]*roots[3])
+        newNum=rem+(roots[1]*roots[1])+(roots[2]*roots[2])+(roots[3]*roots[3])
         rootsTwo, remTwo = findBlindRoots(newNum, 3)
         # if there is still a remainder, try with the next two (This should be faster than the above)
         if remTwo:
             remTwo+=(2*rootsTwo[0])-1
             rootsTwo[0]-=1
-            newNum=remTwo+(roots[1]+roots[1])+(roots[2]*roots[2])
+            newNum=remTwo+(roots[1]*roots[1])+(roots[2]*roots[2])
             rootsThree, remThree = findBlindRoots(newNum, 2)
             # Try with the last two roots, decrease by one, and solve for remainder
             if remThree:
                 remThree+=(2*rootsThree[0])-1
                 rootsThree[0]-=1
-                newNum=remThree+(roots[1]+roots[1])
+                newNum=remThree+(roots[1]*roots[1])
                 rootsFour, remFour = findBlindRoots(newNum, 1)
                 if not remFour:
                     # if no remainder, we found a solution, and we just return
