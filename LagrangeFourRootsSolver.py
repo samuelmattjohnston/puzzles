@@ -51,12 +51,17 @@ def findBlindRoots(num, numRoots):
     res=[]
     rem=num
     for findRoot in range(numRoots):
-        lenRem=len(format(rem,'b'))
-        powHigh = int('0b1'+'0'*((lenRem+1)//2),2)
-        powLow = int('0b1'+'0'*((lenRem-1)//2),2)
-        #abaonded this, as it seemed to be slower than just using closest power of two
-        # powLow, powHigh = nearestTwoRoots(rem)
-        newPow=accPows(rem, powLow, powHigh)
+        if rem == 1:
+            newPow=1
+        elif rem == 0:
+            newPow = 0
+        else:
+            lenRem=len(format(rem,'b'))
+            powHigh = int('0b1'+'0'*((lenRem+1)//2),2)
+            powLow = int('0b1'+'0'*((lenRem-1)//2),2)
+            #abaonded this, as it seemed to be slower than just using closest power of two
+            # powLow, powHigh = nearestTwoRoots(rem)
+            newPow=accPows(rem, powLow, powHigh)
         res.append(newPow)
         rem=max(rem-(newPow*newPow),0)
     return res, rem
@@ -71,26 +76,30 @@ def findRoots(num):
     while rem:
         rem+=(2*roots[0])-1
         roots[0]-=1
-        rootsTwo, remTwo = findBlindRoots(rem, 3)
+        newNum=rem+(roots[1]+roots[1])+(roots[2]*roots[2])+(roots[3]*roots[3])
+        rootsTwo, remTwo = findBlindRoots(newNum, 3)
         # if there is still a remainder, try with the next two (This should be faster than the above)
         if remTwo:
             remTwo+=(2*rootsTwo[0])-1
             rootsTwo[0]-=1
-            rootsThree, remThree = findBlindRoots(remTwo, 2)
+            newNum=remTwo+(roots[1]+roots[1])+(roots[2]*roots[2])
+            rootsThree, remThree = findBlindRoots(newNum, 2)
             # Try with the last two roots, decrease by one, and solve for remainder
             if remThree:
                 remThree+=(2*rootsThree[0])-1
                 rootsThree[0]-=1
-                rootsFour, remFour = findBlindRoots(remThree, 1)
+                newNum=remThree+(roots[1]+roots[1])
+                rootsFour, remFour = findBlindRoots(newNum, 1)
                 if not remFour:
                     # if no remainder, we found a solution, and we just return
-                    return [roots[0],rootsTwo[0]]+rootsThree
+                    return [roots[0],rootsTwo[0],rootsThree[0],rootsFour[0]]
                 #if there is a remainder, rem is able to be increased, and rootsOne decremented 
                 # at the beginning fo loop
             else:
-                return [roots[0]]+rootsTwo
+                return [roots[0],+rootsTwo[0]]+rootsThree
         else:
-            return roots
+            return [roots[0]]+rootsTwo
     return roots
 userRoots=findRoots(args.userNum)
+# userRoots=findRoots(userNum)
 print(f"Roots:\n{userRoots[0]}^2 ,{userRoots[1]}^2 ,{userRoots[2]}^2 ,{userRoots[3]}^2")
